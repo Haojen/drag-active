@@ -5,13 +5,14 @@
 </template>
 
 <script>
-  import DragActive from '../dist/index'
+  // import DragActive from '../dist/index'
+  import DragActive from '../index'
 
   export default {
     name: "test",
     mounted() {
       const dragActive = new DragActive({
-        offset: 20, // 针对屏幕边缘的距离
+        // offset: 20, // 针对屏幕边缘的距离
         el: this.$refs.button, // 需要标记可拖拽的元素
         coordinateX: 100, // 初始化坐标
         coordinateY: 200, // 初始化坐标
@@ -43,9 +44,10 @@
         background: gray;
 
         button {
-            width: 50px;
-            height: 50px;
+            width: 120px;
+            height: 120px;
             background: red;
+            border-radius: 50%;
         }
     }
 </style>
