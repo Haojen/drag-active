@@ -12,12 +12,12 @@
     name: "test",
     mounted() {
       const dragActive = new DragActive({
-        offset: [1000, 10, 10, 10], // 针对屏幕边缘的距离
         el: this.$refs.button, // 需要标记可拖拽的元素
+        // transition: '', // 尚未启用，预留用于拖拽时的动画渐变,
+        offset: 100, // 针对屏幕边缘的距离
         coordinateX: 100, // 初始化坐标
         coordinateY: 200, // 初始化坐标
-        // coordinateSave: true, // 自动保存拖拽位置
-        // transition: '', // 尚未启用，预留用于拖拽时的动画渐变
+        coordinateSave: true, // 自动保存拖拽位置
       })
 
       dragActive.run({

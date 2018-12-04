@@ -126,13 +126,10 @@ export default class DragActive {
       this.el.style.transform = `translate(${haloX}px,${haloY}px)`
       this.el.style.webkitTransform = `translate(${haloX}px,${haloY}px)`
 
-
-      if (this.config.coordinateSave) {
-        localStorage.setItem('DRAG_ACTIVE_POSITION_X', haloX)
-        localStorage.setItem('DRAG_ACTIVE_POSITION_Y', haloY)
-      }
-
       callback.onDragEnd && callback.onDragEnd(this.el, {coordinateX: haloX, coordinateY: haloY})
+
+      localStorage.setItem('DRAG_ACTIVE_POSITION_X', haloX)
+      localStorage.setItem('DRAG_ACTIVE_POSITION_Y', haloY)
     }
   }
 }
