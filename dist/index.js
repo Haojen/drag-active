@@ -137,9 +137,9 @@ if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(15);
-var IE8_DOM_DEFINE = __webpack_require__(16);
-var toPrimitive = __webpack_require__(18);
+var anObject = __webpack_require__(16);
+var IE8_DOM_DEFINE = __webpack_require__(17);
+var toPrimitive = __webpack_require__(19);
 var dP = Object.defineProperty;
 
 exports.f = __webpack_require__(0) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
@@ -178,104 +178,19 @@ module.exports = function (exec) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DragActiveOldVersion = undefined;
 
-var _createClass2 = __webpack_require__(7);
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _classCallCheck2 = __webpack_require__(21);
+var _classCallCheck2 = __webpack_require__(7);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
+var _createClass2 = __webpack_require__(8);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DragActiveOldVersion = exports.DragActiveOldVersion = function DragActiveOldVersion(element, binding) {
-  var _this = this;
-
-  (0, _classCallCheck3.default)(this, DragActiveOldVersion);
-
-  var haloX = localStorage.getItem('HALO_POSITION_X') || 0,
-      haloY = localStorage.getItem('HALO_POSITION_Y') || 0;
-
-  element.style.position = 'fixed';
-  element.style.top = 0;
-  element.style.left = 0;
-
-  element.style.transform = '\n        translate(' + haloX + 'px,' + haloY + 'px) \n      ';
-
-  element.style.webkitTransform = '\n        translate(' + haloX + 'px,' + haloY + 'px) \n      ';
-
-  element.ontouchstart = function (ev) {
-    binding.value && binding.value({ state: START });
-
-    var _element$getBoundingC = element.getBoundingClientRect(),
-        width = _element$getBoundingC.width,
-        height = _element$getBoundingC.height,
-        x = _element$getBoundingC.x,
-        y = _element$getBoundingC.y;
-
-    _this.elWidth = width;
-    _this.elHeight = height;
-    _this.widthCenter = width / 2;
-    _this.heightCenter = height / 2;
-    _this.moveing = false;
-  };
-
-  element.ontouchmove = function (ev) {
-    event.preventDefault();
-    binding.value && binding.value({ state: MOVE });
-
-    _this.moveing = true;
-
-    var _ev$targetTouches$ = ev.targetTouches[0],
-        pageX = _ev$targetTouches$.pageX,
-        pageY = _ev$targetTouches$.pageY;
-
-
-    var widthCenter = _this.widthCenter,
-        heightCenter = _this.heightCenter;
-
-    pageX = pageX + widthCenter > innerWidth && innerWidth - widthCenter - Edge || pageX < widthCenter && widthCenter + Edge || pageX;
-    pageY = pageY + heightCenter > innerHeight && innerHeight - heightCenter - Edge || pageY < heightCenter && heightCenter + Edge || pageY;
-
-    element.style.transform = '\n        translate(' + (pageX.toFixed() - widthCenter) + 'px,' + (pageY.toFixed() - heightCenter) + 'px) \n      ';
-
-    element.style.webkitTransform = '\n        translate(' + (pageX.toFixed() - widthCenter) + 'px,' + (pageY.toFixed() - heightCenter) + 'px) \n      ';
-  };
-
-  element.ontouchend = function (ev) {
-    binding.value && binding.value({ state: END });
-
-    if (!_this.moveing) return;
-
-    var widthCenter = _this.widthCenter,
-        heightCenter = _this.heightCenter;
-
-    var _window = window,
-        innerHeight = _window.innerHeight,
-        innerWidth = _window.innerWidth,
-        _ev$changedTouches$ = ev.changedTouches[0],
-        pageX = _ev$changedTouches$.pageX,
-        pageY = _ev$changedTouches$.pageY;
-
-
-    pageX = pageX + widthCenter > innerWidth && innerWidth - widthCenter - Edge || pageX < widthCenter && widthCenter + Edge || pageX;
-    pageY = pageY + heightCenter > innerHeight && innerHeight - heightCenter - Edge || pageY < heightCenter && heightCenter + Edge || pageY;
-
-    pageX = pageX.toFixed();
-    pageY = pageY.toFixed();
-
-    var haloX = pageX > innerWidth / Edge ? innerWidth - _this.elWidth - Edge : Edge,
-        haloY = pageY < 50 && (haloX = pageX - widthCenter) && Edge || pageY > innerHeight - 50 && (haloX = pageX - widthCenter) && innerHeight - _this.elHeight - Edge || pageY - heightCenter;
-
-    element.style.transform = '\n        translate(' + haloX + 'px,' + haloY + 'px) \n      ';
-
-    // cache
-    localStorage.setItem('HALO_POSITION_X', haloX);
-    localStorage.setItem('HALO_POSITION_Y', haloY);
-  };
-};
+var DEFAULT_EDGE = 20,
+    DEFAULT_COORDINATE = 50;
 
 var DragActive = function () {
   function DragActive() {
@@ -290,8 +205,8 @@ var DragActive = function () {
     this.el = typeof el === 'string' ? document.querySelector(config.el) : config.el;
 
     if (config.coordinateSave) {
-      config.coordinateX = localStorage.getItem('DRAG_ACTIVE_POSITION_X') || config.coordinateX;
-      config.coordinateY = localStorage.getItem('DRAG_ACTIVE_POSITION_Y') || config.coordinateY;
+      config.coordinateX = localStorage.getItem('DRAG_ACTIVE_POSITION_X') || config.coordinateX || DEFAULT_COORDINATE;
+      config.coordinateY = localStorage.getItem('DRAG_ACTIVE_POSITION_Y') || config.coordinateY || DEFAULT_COORDINATE;
     }
 
     this.el.style.position = 'fixed';
@@ -305,59 +220,61 @@ var DragActive = function () {
   (0, _createClass3.default)(DragActive, [{
     key: 'run',
     value: function run() {
-      var _this2 = this;
+      var _this = this;
 
       var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       this.el.ontouchstart = function (ev) {
-        var _el$getBoundingClient = _this2.el.getBoundingClientRect(),
+        var _el$getBoundingClient = _this.el.getBoundingClientRect(),
             width = _el$getBoundingClient.width,
             height = _el$getBoundingClient.height;
 
-        _this2.elWidth = width;
-        _this2.elHeight = height;
-        _this2.widthCenter = width / 2;
-        _this2.heightCenter = height / 2;
-        _this2.moveing = false;
-        callback.onDragStart && callback.onDragStart(_this2.el);
+        _this.elWidth = width;
+        _this.elHeight = height;
+        _this.widthCenter = width / 2;
+        _this.heightCenter = height / 2;
+
+        _this.moveing = false;
+        _this.el.style.transition = null;
+        callback.onDragStart && callback.onDragStart(_this.el);
       };
 
       this.el.ontouchmove = function (ev) {
         event.preventDefault();
 
-        _this2.moveing = true;
+        _this.moveing = true;
 
-        var _ev$targetTouches$2 = ev.targetTouches[0],
-            pageX = _ev$targetTouches$2.pageX,
-            pageY = _ev$targetTouches$2.pageY;
+        var _ev$targetTouches$ = ev.targetTouches[0],
+            pageX = _ev$targetTouches$.pageX,
+            pageY = _ev$targetTouches$.pageY;
 
 
-        var widthCenter = _this2.widthCenter,
-            heightCenter = _this2.heightCenter,
-            Edge = _this2.config.offset;
+        var widthCenter = _this.widthCenter,
+            heightCenter = _this.heightCenter,
+            Edge = _this.config.offset || DEFAULT_EDGE;
 
         pageX = pageX + widthCenter > innerWidth && innerWidth - widthCenter - Edge || pageX < widthCenter && widthCenter + Edge || pageX;
         pageY = pageY + heightCenter > innerHeight && innerHeight - heightCenter - Edge || pageY < heightCenter && heightCenter + Edge || pageY;
 
-        _this2.el.style.transform = '\n        translate(' + (pageX.toFixed() - widthCenter) + 'px,' + (pageY.toFixed() - heightCenter) + 'px) \n      ';
+        _this.el.style.transform = '\n        translate(' + (pageX.toFixed() - widthCenter) + 'px,' + (pageY.toFixed() - heightCenter) + 'px) \n      ';
 
-        _this2.el.style.webkitTransform = '\n        translate(' + (pageX.toFixed() - widthCenter) + 'px,' + (pageY.toFixed() - heightCenter) + 'px) \n      ';
+        _this.el.style.webkitTransform = '\n        translate(' + (pageX.toFixed() - widthCenter) + 'px,' + (pageY.toFixed() - heightCenter) + 'px) \n      ';
 
-        callback && callback.onDragMove(_this2.el);
+        callback && callback.onDragMove(_this.el);
       };
 
       this.el.ontouchend = function (ev) {
-        if (!_this2.moveing) return;
+        if (!_this.moveing) return;
 
-        var _window2 = window,
-            innerHeight = _window2.innerHeight,
-            innerWidth = _window2.innerWidth,
-            widthCenter = _this2.widthCenter,
-            heightCenter = _this2.heightCenter,
-            Edge = _this2.config.offset;
-        var _ev$changedTouches$2 = ev.changedTouches[0],
-            pageX = _ev$changedTouches$2.pageX,
-            pageY = _ev$changedTouches$2.pageY;
+        var _window = window,
+            innerHeight = _window.innerHeight,
+            innerWidth = _window.innerWidth,
+            widthCenter = _this.widthCenter,
+            heightCenter = _this.heightCenter,
+            Edge = _this.config.offset || DEFAULT_EDGE;
+        var _ev$changedTouches$ = ev.changedTouches[0],
+            pageX = _ev$changedTouches$.pageX,
+            pageY = _ev$changedTouches$.pageY;
 
 
         pageX = pageX + widthCenter > innerWidth && innerWidth - widthCenter - Edge || pageX < widthCenter && widthCenter + Edge || pageX;
@@ -366,17 +283,17 @@ var DragActive = function () {
         pageX = pageX.toFixed();
         pageY = pageY.toFixed();
 
-        var haloX = pageX > innerWidth / 2 ? innerWidth - _this2.elWidth - _this2.config.offset : _this2.config.offset,
-            haloY = pageY < 50 && (haloX = pageX - widthCenter) && Edge || pageY > innerHeight - 50 && (haloX = pageX - widthCenter) && innerHeight - _this2.elHeight - Edge || pageY - heightCenter;
+        var haloX = pageX > innerWidth / 2 ? innerWidth - _this.elWidth - Edge : Edge,
+            haloY = pageY < 50 && (haloX = pageX - widthCenter) && Edge || pageY > innerHeight - 50 && (haloX = pageX - widthCenter) && innerHeight - _this.elHeight - Edge || pageY - heightCenter;
 
-        _this2.el.style.transform = 'translate(' + haloX + 'px,' + haloY + 'px)';
-        _this2.el.style.webkitTransform = 'translate(' + haloX + 'px,' + haloY + 'px)';
-
+        _this.el.style.transition = 'transform .4s';
+        _this.el.style.transform = 'translate(' + haloX + 'px,' + haloY + 'px)';
+        _this.el.style.webkitTransform = 'translate(' + haloX + 'px,' + haloY + 'px)';
         // cache
         localStorage.setItem('DRAG_ACTIVE_POSITION_X', haloX);
         localStorage.setItem('DRAG_ACTIVE_POSITION_Y', haloY);
 
-        callback.onDragEnd && callback.onDragEnd(_this2.el, { coordinateX: haloX, coordinateY: haloY });
+        callback.onDragEnd && callback.onDragEnd(_this.el, { coordinateX: haloX, coordinateY: haloY });
       };
     }
   }]);
@@ -394,7 +311,22 @@ exports.default = DragActive;
 
 exports.__esModule = true;
 
-var _defineProperty = __webpack_require__(8);
+exports.default = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _defineProperty = __webpack_require__(9);
 
 var _defineProperty2 = _interopRequireDefault(_defineProperty);
 
@@ -419,16 +351,16 @@ exports.default = function () {
 }();
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(9), __esModule: true };
-
-/***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(10);
+module.exports = { "default": __webpack_require__(10), __esModule: true };
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(11);
 var $Object = __webpack_require__(3).Object;
 module.exports = function defineProperty(it, key, desc) {
   return $Object.defineProperty(it, key, desc);
@@ -436,23 +368,23 @@ module.exports = function defineProperty(it, key, desc) {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var $export = __webpack_require__(11);
+var $export = __webpack_require__(12);
 // 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
 $export($export.S + $export.F * !__webpack_require__(0), 'Object', { defineProperty: __webpack_require__(4).f });
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(2);
 var core = __webpack_require__(3);
-var ctx = __webpack_require__(12);
-var hide = __webpack_require__(14);
-var has = __webpack_require__(20);
+var ctx = __webpack_require__(13);
+var hide = __webpack_require__(15);
+var has = __webpack_require__(21);
 var PROTOTYPE = 'prototype';
 
 var $export = function (type, name, source) {
@@ -513,11 +445,11 @@ module.exports = $export;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(13);
+var aFunction = __webpack_require__(14);
 module.exports = function (fn, that, length) {
   aFunction(fn);
   if (that === undefined) return fn;
@@ -539,7 +471,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -549,11 +481,11 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(4);
-var createDesc = __webpack_require__(19);
+var createDesc = __webpack_require__(20);
 module.exports = __webpack_require__(0) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
@@ -563,7 +495,7 @@ module.exports = __webpack_require__(0) ? function (object, key, value) {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(1);
@@ -574,16 +506,16 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = !__webpack_require__(0) && !__webpack_require__(5)(function () {
-  return Object.defineProperty(__webpack_require__(17)('div'), 'a', { get: function () { return 7; } }).a != 7;
+  return Object.defineProperty(__webpack_require__(18)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(1);
@@ -596,7 +528,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -614,7 +546,7 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -628,7 +560,7 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 var hasOwnProperty = {}.hasOwnProperty;
@@ -636,21 +568,6 @@ module.exports = function (it, key) {
   return hasOwnProperty.call(it, key);
 };
 
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-exports.default = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
 
 /***/ })
 /******/ ])["default"];

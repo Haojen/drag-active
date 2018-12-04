@@ -1,4 +1,5 @@
-const DEFAULT_EDGE = 20
+const DEFAULT_EDGE = 20, DEFAULT_COORDINATE = 50
+
 export default class DragActive {
   constructor(config = {}) {
     if (!config.el) {
@@ -9,8 +10,8 @@ export default class DragActive {
     this.el = typeof el === 'string' ? document.querySelector(config.el) : config.el
 
     if (config.coordinateSave) {
-      config.coordinateX = localStorage.getItem('DRAG_ACTIVE_POSITION_X') || config.coordinateX
-      config.coordinateY = localStorage.getItem('DRAG_ACTIVE_POSITION_Y') || config.coordinateY
+      config.coordinateX = localStorage.getItem('DRAG_ACTIVE_POSITION_X') || config.coordinateX || DEFAULT_COORDINATE
+      config.coordinateY = localStorage.getItem('DRAG_ACTIVE_POSITION_Y') || config.coordinateY || DEFAULT_COORDINATE
     }
 
     this.el.style.position = 'fixed'
