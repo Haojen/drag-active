@@ -42,10 +42,10 @@ export default class DragActive {
       }
       else if (this.config.offset.length === 3) {
         //100, 50, 0
-        Edge.push(this.config.offset[0]) // up 1
-        Edge.push(this.config.offset[1]) // right 2
-        Edge.push(this.config.offset[2]) // bottom 3
-        Edge.push(this.config.offset[1]) // left 4
+        Edge.push(this.config.offset[0]) // up
+        Edge.push(this.config.offset[1]) // right
+        Edge.push(this.config.offset[2]) // bottom
+        Edge.push(this.config.offset[1]) // left
       }
 
       else if (this.config.offset.length === 2) {
